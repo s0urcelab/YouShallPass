@@ -58,12 +58,12 @@ YouShallPass.prototype = {
         })(document);
     },
     // password mask pattern generator
-    pointGen: function(num) {
-        return Array.apply(null, Array(num)).map(function() { return this.pattern }).join("")
+    pointGen: function(pattern, num) {
+        return Array.apply(null, Array(num)).map(function() { return pattern }).join("")
     },
 
     delayEffect: function(arg) {
-        arg.value = this.pointGen(arg.value.length);
+        arg.value = this.pointGen(this.pattern, arg.value.length);
     },
     // oninput handle
     keyboardInputHandle: function(e) {
@@ -72,15 +72,12 @@ YouShallPass.prototype = {
         var index = e.target.selectionStart;
         var nowVal = e.target.value;
         // increase length of input's value
-        var incre = nowVal.length - preVal.length;
-        // add String splice function
-        String.prototype.splice = function(start, newStr) {
-            return this.slice(0, start) + newStr + this.slice(start);
-        };
+        var incre = nowVal.length - preVal.length;  
+        
         // increase text
         if (incre > 0) {
             var newStr = nowVal.slice(index - incre, index);
-            this.realText = preVal.splice(index - incre, newStr)
+            this.realText = preVal.slice(0, index - incre) + newStr + preVal.slice(index - incre)
         // delete text
         } else if (incre < 0) {
             this.realText = preVal.slice(0, index) + preVal.slice(index - incre);
@@ -88,7 +85,7 @@ YouShallPass.prototype = {
 
         // render mask effect
         if (nowVal.length > 0) {
-            e.target.value = this.pointGen(nowVal.length - 1) + nowVal.charAt(nowVal.length - 1);
+            e.target.value = this.pointGen(this.pattern, nowVal.length - 1) + nowVal.charAt(nowVal.length - 1);
             delay.start(this.delayEffect.bind(this), e.target, this.delay);
         }
         // reset insert cursor location
