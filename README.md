@@ -3,8 +3,11 @@ A delayed password masking (mobile style) Javascript library
 support IE9+
 
 ## Usage
-import
-<script type="text/javascript" src="./YouShallPass.js"></script>
+Including it on your page
+
+```html
+<script src="YouShallPass.js"></script>
+```
 ```javascript
 // instantiate ysp with 2 params:  (pattern[String], delay[number])
 let ysp = new YouShallPass("●", 800);
