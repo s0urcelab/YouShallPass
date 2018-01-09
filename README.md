@@ -1,13 +1,16 @@
 # YouShallPass
-A delayed password masking (mobile style)  Javascript library
+A delayed password masking (mobile style) Javascript library
+support IE9+
 
 ## Usage
-
+import
+<script type="text/javascript" src="./YouShallPass.js"></script>
 ```javascript
-let ysp = new YouShallPass(800);
+// instantiate ysp with 2 params:  (pattern[String], delay[number])
+let ysp = new YouShallPass("●", 800);
 
-// if you use IE9
-ysp.init();
+// if you are using IE9,call this function to fix a minor bug
+ysp.fixIE9();
 
 // bind your password input element such as <input type="text" id="passwd"/>
 document.querySelector("#passwd").oninput = ysp.keyboardInputHandle.bind(ysp);
