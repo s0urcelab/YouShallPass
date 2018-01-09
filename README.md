@@ -8,6 +8,7 @@ Including it on your page
 ```html
 <script src="YouShallPass.js"></script>
 ```
+initial
 ```javascript
 // instantiate ysp with 2 params:  (pattern[String], delay[number])
 let ysp = new YouShallPass("●", 800);
@@ -18,8 +19,12 @@ ysp.fixIE9();
 // bind your password input element such as <input type="text" id="passwd"/>
 document.querySelector("#passwd").oninput = ysp.keyboardInputHandle.bind(ysp);
 ```
+your real password value will be here
 
-[Demo](http://github.hubspot.com/select/docs/welcome)
+```javascript
+ysp.realText
+```
+[Demo](http://blog.s0urce.tk/YouShallPass/demo/)
 
 
 ## Contributing
