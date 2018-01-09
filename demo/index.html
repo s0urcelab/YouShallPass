@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://blog.s0urce.tk/YouShallPass/ -->
+<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="YouShallPass : A delayed password masking (mobile style)  Javascript library">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="./YouShallPass _ A delayed password masking (mobile style) Javascript library_files/style.css">
+
+<!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>YouShallPass | A delayed password masking (mobile style) Javascript library</title>
+<meta property="og:title" content="YouShallPass">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="A delayed password masking (mobile style) Javascript library">
+<meta property="og:description" content="A delayed password masking (mobile style) Javascript library">
+<link rel="canonical" href="http://blog.s0urce.tk/YouShallPass/">
+<meta property="og:url" content="http://blog.s0urce.tk/YouShallPass/">
+<meta property="og:site_name" content="YouShallPass">
+<script type="application/ld+json">
+{"name":"YouShallPass","description":"A delayed password masking (mobile style) Javascript library","author":null,"@type":"WebSite","url":"http://blog.s0urce.tk/YouShallPass/","image":null,"publisher":null,"headline":"YouShallPass","dateModified":null,"datePublished":null,"sameAs":null,"mainEntityOfPage":null,"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<style>
+  .ke,.va{
+    font-size: 18px;
+  }
+  .ke{
+    color: blue;
+  }
+
+</style>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/source2git/YouShallPass">View on GitHub</a>
+
+          <h1 id="project_title">YouShallPass</h1>
+          <h2 id="project_tagline">A delayed password masking Javascript library</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1 id="demo">Demo</h1>
+        <input type="text" id="passwd">
+        <div>
+        <span class="ke">ysp.realText : </span><span class="va"></span>
+        </div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p class="copyright">YouShallPass maintained by <a href="https://github.com/source2git">source2git</a></p>
+        
+        <p>Published with <a href="https://pages.github.com/">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    <script type="text/javascript">
+
+      // debounce
+var delay = {
+    execute: function(cb, arg) {
+        cb(arg);
+        delete this.timeoutID;
+    },
+    start: function(cb, arg, delay) {
+        this.cancel();
+        var self = this;
+        this.timeoutID = window.setTimeout(function() { self.execute(cb, arg); }, delay);
+    },
+    cancel: function() {
+        if (typeof this.timeoutID == "number") {
+            window.clearTimeout(this.timeoutID);
+            delete this.timeoutID;
+        }
+    }
+};
+
+/**
+ * YouShallPass constructor;
+ * @param {String} pattern [pattern string]
+ * @param {int} delay [delay time (ms)]
+ */
+function YouShallPass(pattern, delay) {
+    // set pattern
+    if(typeof pattern === "string"){
+        this.pattern = pattern;
+    }else{
+        console.warn("pattern is not string");
+    }
+
+    // set delay
+    if(typeof delay === "number" && delay > 0){
+        this.delay = delay;
+    }else if(delay ){
+        console.warn("delay is not positive number");
+    }
+}
+
+YouShallPass.prototype = {
+    // password input real value
+    realText: "",
+    // fix ie9 oninput 'delete' key fire bug
+    fixIE9: function() {
+        (function(d) {
+            if (navigator.userAgent.indexOf('MSIE 9') === -1) return;
+
+            d.addEventListener('selectionchange', function() {
+                var el = d.activeElement;
+
+                if (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && el.type === 'text')) {
+                    var ev = d.createEvent('CustomEvent');
+                    ev.initCustomEvent('input', true, true, {});
+                    el.dispatchEvent(ev);
+                }
+            });
+        })(document);
+    },
+    // password mask pattern generator
+    pointGen: function(pattern, num) {
+        return Array.apply(null, Array(num)).map(function() { return pattern }).join("")
+    },
+
+    delayEffect: function(arg) {
+        arg.value = this.pointGen(this.pattern, arg.value.length);
+    },
+    // oninput handle
+    keyboardInputHandle: function(e) {
+        var preVal = this.realText;
+        // insert cursor location
+        var index = e.target.selectionStart;
+        var nowVal = e.target.value;
+        // increase length of input's value
+        var incre = nowVal.length - preVal.length;  
+        
+        // increase text
+        if (incre > 0) {
+            var newStr = nowVal.slice(index - incre, index);
+            this.realText = preVal.slice(0, index - incre) + newStr + preVal.slice(index - incre)
+        // delete text
+        } else if (incre < 0) {
+            this.realText = preVal.slice(0, index) + preVal.slice(index - incre);
+        }
+
+        // render mask effect
+        if (nowVal.length > 0) {
+            e.target.value = this.pointGen(this.pattern, nowVal.length - 1) + nowVal.charAt(nowVal.length - 1);
+            delay.start(this.delayEffect.bind(this), e.target, this.delay);
+        }
+        // reset insert cursor location
+        e.target.setSelectionRange(index, index);
+        // console.log(this.realText);
+    }
+}
+
+
+var ysp = new YouShallPass("●", 800);
+ysp.fixIE9();
+
+document.querySelector("#passwd").addEventListener('input', ysp.keyboardInputHandle.bind(ysp));
+document.querySelector("#passwd").addEventListener('input', function(){
+  document.querySelector(".va").innerHTML = ysp.realText;
+});
+    </script>>
+  
+
+</body></html>
