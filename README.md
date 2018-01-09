@@ -26,11 +26,9 @@ Your real password value will be here
 ```javascript
 ysp.realText
 ```
+
+## Demo
 [Demo](http://blog.s0urce.tk/YouShallPass/demo/)
-
-
-## Contributing
-
 
 ## License
 Copyright &copy; 2018 s0urce - [MIT License](LICENSE)
