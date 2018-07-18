@@ -28,7 +28,7 @@ ysp.realText
 ```
 
 ## Demo
-[Demo](http://blog.s0urce.tk/YouShallPass/demo/)
+[Demo](https://source2git.github.io/YouShallPass/demo/)
 
 ## License
 Copyright &copy; 2018 s0urce - [MIT License](LICENSE)
